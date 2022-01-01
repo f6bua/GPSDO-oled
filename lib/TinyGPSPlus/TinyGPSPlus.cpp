@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctype.h>
 #include <stdlib.h>
 
+// Adaptation pour le GPS chinois qui ne donne pas les trames GPRMC par défaut
 #define _GPRMCterm   "GNRMC"
 #define _GPGGAterm   "GNGGA"
 
