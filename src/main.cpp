@@ -105,14 +105,14 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   // Paquets de 20/10 = 2°
   lon2 = int(reste / 2.0);                  //
   reste = reste - float(lon2) * 2;          //
-   // Paquets de 2°/24 = 5'
-  lon3 = int(reste /(5/60));                //
+  // Paquets de 2°/24 = 5'
+  lon3 = int(reste / (5/60));               //
   reste = reste - float(lon3)*(5/60);       //
-   // Paquets de 5'/10 = 30"
-   lon4 = int(reste /(30/3600));            //
-   reste = reste - float(lon4)*(30/3600);   //
+  // Paquets de 5'/10 = 30"
+  lon4 = int(reste /(30/3600));             //
+  reste = reste - float(lon4)*(30/3600);    //
   // Paquets de 30"/10 = 3"
-  lon5 = int(reste / (3/3600));             //
+  lon5 = int(reste/(3/3600));               //
   
 
   // latitude
@@ -372,13 +372,13 @@ void setup()
   //uint32_t m = micros();
   oled.clear();
   oled.set2X();
-  oled.println("   GPSDO");
+  oled.println("    Multi  GPSDO   ");
   oled.set1X();
-  oled.println("     40-25-10 MHz");
+  oled.println("    40-25-10 MHz   ");
   oled.setCursor(0,3);
   oled.println("    Arduino NEO-8M ");
   oled.setCursor(0,5);
-  oled.println("  by F1CJN - F1TE");
+  oled.println(" de F1TE mod F6BUA ");
    
   delay(4000);  						// délai maintien de l'écran de démarrage pendant 4s
 
