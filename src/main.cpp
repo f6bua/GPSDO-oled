@@ -3,7 +3,7 @@
  *  --- Fout = 100 KHz ( pour afficheur 4 lignes de 16 ou 20 caracteres et afficheur OLED 128x64 )
  *
  * Alain fort F1CJN  November, 11, 2016     /   F1TE  Lucien Serrano  06 Octobre 2021
- * Modifié par F6BUA le 09/12/2021
+ * Modifié par F6BUA le 10/01/2022
  ****************************************************************************************************************** 
  * 
  * This program is made :
