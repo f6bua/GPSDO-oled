@@ -98,38 +98,39 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   float reste;
   
   // longitude  
-  // Paquets de 20°
-  reste = lng + (20*9);                  // 3,50826 + 180 = 183,50826 On ajoute le décalage entre le 0 du locator et le 0 de Longitude
-  lon1 = int(reste / 20.0);             // 180 / 20 = 9 --> J                     Boite de 20°
+  reste = lng + (20*9);                     // On ajoute le décalage entre le 0 du locator et le 0 de Longitude
+   // Paquets de 20° 
+  lon1 = int(reste / 20.0);                 //
+  reste = reste - float(lon1) * 20.0;       //
   // Paquets de 20/10 = 2°
-  reste = reste - float(lon1) * 20.0;   // 183,50826 - 9*20 = 3,50826
-  lon2 = int(reste / 2.0);              // 3,50826 / 2 = 1,75418 => 1 --> 1       Boite de 2°
-  // Paquets de 2°/24 = 5'
-  reste = reste - float(lon2) * 2;      // 3,50826 - 2*1 = 1,50826
-  lon3 = int(reste * 12);               // 1,50826 * 60/5 = 18,09912 => 18 --> S    Boite de 2°/24 = 120'/24 = 5'
-  // Paquets de 5'/10 = 30"
-  reste = reste - float(lon3)/12;       // 1,50826 - 18/12 = 0,00826
-  lon4 = int(reste * 120);              // 0,00826 * 3600/30 = 0,9912 ==> 0 --> 0 Boite de 5'/10 = 300/10 = 30"
-  // Paquets de 30"/18 
-  reste = reste - float(lon4)/120;        // 0,9912 - 0 = 0,9912
-  lon5 = int(reste * 240);                // 0,9912*240 =     => 23 --> X            Boite de 3"
+  lon2 = int(reste / 2.0);                  //
+  reste = reste - float(lon2) * 2;          //
+   // Paquets de 2°/24 = 5'
+  lon3 = int(reste /(5/60));                //
+  reste = reste - float(lon3)*(5/60);       //
+   // Paquets de 5'/10 = 30"
+   lon4 = int(reste /(30/3600));            //
+   reste = reste - float(lon4)*(30/3600);   //
+  // Paquets de 30"/10 = 3"
+  lon5 = int(reste / (3/3600));             //
   
 
   // latitude
-  reste = lat + 90.0;                   // 50,36157 + 90 = 140,36157  On ajoute 90° car le locator commence au pole Sud
-  la1 = int(reste / 10.0);              // 140 / 10 = 14 --> O                      Boite de 10°
+  reste = lat + 90.0;                       // On ajoute 90° car le locator commence au pole Sud
+  // Paquets de 10°
+  la1 = int(reste / 10.0);                  // 
+  reste = reste - float(la1) * 10.0;        // 
   // Paquets de 10/10 = 1°
-  reste = reste - float(la1) * 10.0;    // 140,36157 - 14*10 = 0,36157
-  la2 = int(reste);                     // 0  --> 0                                 Boite de 1°
-   // Paquets de 1°/24 = 2,5'
-  reste = reste - float(la2);           // 0,36157 - 0 = 0,36157
-  la3 = int(reste * 24);                // 24*0,36157 = 8,67768 => 8   --> I          Boite de 2,5'
+  la2 = int(reste / 1);                     // 
+  reste = reste - float(la2) * 1;           //
+  // Paquets de 1°/24 = 2,5'
+  la3 = int(reste / (2,5/60));              // 
+  reste = reste - float(la3)*(2,5/60);      // 
   // Paquets de 2,5'/10 = 15"
-  reste = reste - float(la3)/24;        // 0,36157 - 8/24 = 0,02823
-  la4 = int(reste)*240;                 // 0,02823*240= 6,7768 =>6                  Boite de 15"
-  // Paquets de 15"/18 
-  reste = reste - float(la4)/240;           // 0,02823 - 6/240 = 0
-  la5 = int(reste * 240 );                  //                 =17
+  la4 = int(reste / (15/3600));             //
+  reste = reste - float(la4)*(15/3600);     // 
+    // Paquets de 15"/10 = 1,5"
+  la5 = int(reste / (1.5/3600));            //
   
   dst[0] = (char)lon1 + 65;     //  9 + 65 = 74 --> J
   dst[1] = (char)la1 + 65;      // 14 + 65 = 79 --> O
