@@ -85,7 +85,8 @@ int lock;
 //void getgps(TinyGPSPlus &gps);
  float latitude;
  float longitude;
- char locator[10];
+ char locator[11] = {'J','0','1','0','S','I','0','6','X','R',0};
+ //char locator[11] = {0};
 
 
 
@@ -175,7 +176,7 @@ void getgps(TinyGPSPlus &gps)
   
   // Affichage --- Sat + Locator
   // ---------------------------
-  calcLocator(locator,gps.location.lat(),gps.location.lng());
+  //calcLocator(locator,gps.location.lat(),gps.location.lng());
   oled.setCursor(0,4); oled.print(" Sat   "); 
   if (gps.satellites.value() < 10)     // Add a leading zero
     oled.print("0");
