@@ -111,8 +111,8 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   // Paquets de 5'/10 = 30"
   lon4 = int(reste /(30/3600));             //
   reste = reste - float(lon4)*(30/3600);    //
-  // Paquets de 30"/10 = 3"
-  lon5 = int(reste/(3/3600));               //
+  // Paquets de 30"/24 = 1,25"
+  lon5 = int(reste/(1.25/3600));               //
   
 
   // latitude
@@ -129,19 +129,19 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   // Paquets de 2,5'/10 = 15"
   la4 = int(reste / (15/3600));             //
   reste = reste - float(la4)*(15/3600);     // 
-    // Paquets de 15"/10 = 1,5"
-  la5 = int(reste / (1.5/3600));            //
+    // Paquets de 15"/24 = 0,625"
+  la5 = int(reste / (0.625/3600));            //
   
   dst[0] = (char)lon1 + 65;     //  9 + 65 = 74 --> J
   dst[1] = (char)la1 + 65;      // 14 + 65 = 79 --> O
-  dst[2] = (char)lon2 + 48;     // 1 + 48 = 49 --> 1
-  dst[3] = (char)la2 + 48;      // 0 + 48 = 48 --> 0
+  dst[2] = (char)lon2 + 48;     //    1 + 48 = 49 --> 1
+  dst[3] = (char)la2 + 48;      //    0 + 48 = 48 --> 0
   dst[4] = (char)lon3 + 65;     // 18 + 65 = 83 --> S
   dst[5] = (char)la3 + 65;      //  8 + 65 = 74 --> I
-  dst[6] = (char)lon4 + 48;     // 0 + 48 = 48 --> 0
-  dst[7] = (char)la4 + 48;      // 6 + 48 = 54 --> 6
+  dst[6] = (char)lon4 + 48;     //    0 + 48 = 48 --> 0
+  dst[7] = (char)la4 + 48;      //    6 + 48 = 54 --> 6
   dst[8] = (char)lon5 + 65;     // 23 + 65 = 88 --> X
-  dst[9] = (char)la5 + 65;      // 17 + 65 = 82 --> R     
+  dst[9] = (char)la5 + 65;      // 17 + 65 = 82 --> R     Si Long = 3,508333° et Lat = 50,3613°
 }
 
 void getgps(TinyGPSPlus &gps)
