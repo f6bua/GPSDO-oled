@@ -100,12 +100,12 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   reste = lng + (20*9);                     // On ajoute le décalage entre le 0 du locator et le 0 de Longitude
    // Paquets de 20° 
   lon1 = int(reste / 20);                 // Nbre de paquets de 20° dans le reste
-  reste = reste - float(lon1) * 20.0;       // 
+  reste = reste - float(lon1) * 20;       // 
   // Paquets de 20/10 = 2°
   lon2 = int(reste / 2);                  //  Nbre de paquets de 2° dans le reste
   reste = reste - float(lon2) * 2;          //
   // Paquets de 2°/24 = 5'
-  lon3 = int(reste / (5.0/60));             // nombre de paquets de 5' dans le reste
+  lon3 = int(reste * 60 / 5);             // nombre de paquets de 5' dans le reste
   reste = reste - float(lon3)*(5/60);       //
   // Paquets de 5'/10 = 30"
   lon4 = int(reste * 3600/30);             //
@@ -118,12 +118,12 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   reste = lat + 90.0;                       // On ajoute 90° car le locator commence au pole Sud
   // Paquets de 10°
   la1 = int(reste / 10);                  // 
-  reste = reste - float(la1) * 10.0;        // 
+  reste = reste - float(la1) * 10;        // 
   // Paquets de 10/10 = 1°
   la2 = int(reste / 1);                     // 
   reste = reste - float(la2) * 1;           //
   // Paquets de 1°/24 = 2,5'
-  la3 = int(reste / (2.5/60));              // 
+  la3 = int(reste * 60 / 2.5);              // 
   reste = reste - float(la3) * (2.5/60);      // 
   // Paquets de 2,5'/10 = 15"
   la4 = int(reste * 3600/ 15);             //
