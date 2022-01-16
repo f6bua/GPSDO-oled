@@ -82,11 +82,10 @@ int old_moy_val_loop;                     //
 int seuil_loop = 21;                      // fenêtre de 200mV, 2 fois (5 / 1024) * 21 = 0.1V   
 int lock;
 
-void getgps(TinyGPSPlus &gps);
-
-float latitude;
-float longitude;
-char locator[6];
+//void getgps(TinyGPSPlus &gps);
+ float latitude;
+ float longitude;
+ char locator[10];
 
 
 
@@ -100,38 +99,53 @@ void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
   // longitude  
   reste = lng + (20*9);                     // On ajoute le décalage entre le 0 du locator et le 0 de Longitude
    // Paquets de 20° 
-  lon1 = int(reste / 20.0);                 //
-  reste = reste - float(lon1) * 20.0;       //
+  lon1 = int(reste / 20);                 // Nbre de paquets de 20° dans le reste
+  reste = reste - float(lon1) * 20.0;       // 
   // Paquets de 20/10 = 2°
-  lon2 = int(reste / 2.0);                  //
+  lon2 = int(reste / 2);                  //  Nbre de paquets de 2° dans le reste
   reste = reste - float(lon2) * 2;          //
   // Paquets de 2°/24 = 5'
-  lon3 = int(reste / (5/60));               //
+  lon3 = int(reste / (5.0/60));             // nombre de paquets de 5' dans le reste
   reste = reste - float(lon3)*(5/60);       //
   // Paquets de 5'/10 = 30"
+<<<<<<< HEAD
   lon4 = int(reste /(30/3600));             //
   reste = reste - float(lon4)*(30/3600);    //
   // Paquets de 30"/24 = 1,25"
   lon5 = int(reste/(1.25/3600));               //
   
+=======
+  lon4 = int(reste / (30.0/3600));             // nombre de paquets de 30" dans le reste
+  reste = reste - float(lon4) * (30/3600);    //
+  // Paquets de 30"/10 = 3"
+  lon5 = int(reste / (3.0/3600));               // nombre de paquets de 3" dans le reste
+>>>>>>> 50eb44159e769f0b4f47716480fbb91ef59bf247
 
   // latitude
   reste = lat + 90.0;                       // On ajoute 90° car le locator commence au pole Sud
   // Paquets de 10°
-  la1 = int(reste / 10.0);                  // 
+  la1 = int(reste / 10);                  // 
   reste = reste - float(la1) * 10.0;        // 
   // Paquets de 10/10 = 1°
   la2 = int(reste / 1);                     // 
   reste = reste - float(la2) * 1;           //
   // Paquets de 1°/24 = 2,5'
-  la3 = int(reste / (2,5/60));              // 
-  reste = reste - float(la3)*(2,5/60);      // 
+  la3 = int(reste / (2.5/60));              // 
+  reste = reste - float(la3) * (2.5/60);      // 
   // Paquets de 2,5'/10 = 15"
+<<<<<<< HEAD
   la4 = int(reste / (15/3600));             //
   reste = reste - float(la4)*(15/3600);     // 
     // Paquets de 15"/24 = 0,625"
   la5 = int(reste / (0.625/3600));            //
   
+=======
+  la4 = int(reste / (15.0/3600));             //
+  reste = reste - float(la4) * (15/3600);     // 
+    // Paquets de 15"/10 = 1,5"
+  la5 = int(reste / (1.5/3600));            //
+
+>>>>>>> 50eb44159e769f0b4f47716480fbb91ef59bf247
   dst[0] = (char)lon1 + 65;     //  9 + 65 = 74 --> J
   dst[1] = (char)la1 + 65;      // 14 + 65 = 79 --> O
   dst[2] = (char)lon2 + 48;     //    1 + 48 = 49 --> 1
@@ -150,9 +164,9 @@ void getgps(TinyGPSPlus &gps)
   // --------------------------------
   oled.set1X();             // OLED 128x64
   oled.setCursor(0,0);
-  oled.print(" Lat   ");
+  oled.print(" Latitude:   ");
   oled.println(gps.location.lat(),5);
-  oled.print(" Long  ");  
+  oled.print(" Longitude:  ");  
   oled.println(gps.location.lng(),5);
 
   
@@ -192,15 +206,19 @@ void getgps(TinyGPSPlus &gps)
    oled.print("  Unlock");
   }
   oled.setCursor(0,6);
-  oled.print("   ");
+  oled.print("  ");
   oled.set2X();
   oled.print (locator[0]);  
   oled.print (locator[1]); 
   oled.print (locator[2]); 
   oled.print (locator[3]); 
   oled.print (locator[4]); 
-  oled.println (locator[5]); 
+  oled.print (locator[5]); 
   oled.set1X();
+  oled.print (locator[6]); 
+  oled.print (locator[7]); 
+  oled.print (locator[8]); 
+  oled.println (locator[9]); 
   
 }
   // 
@@ -372,13 +390,15 @@ void setup()
   //uint32_t m = micros();
   oled.clear();
   oled.set2X();
-  oled.println("    Multi  GPSDO   ");
+  oled.println("MultiGPSDO");
   oled.set1X();
-  oled.println("    40-25-10 MHz   ");
+  oled.println();
+  oled.println("   40-25-10 MHz    ");
   oled.setCursor(0,3);
-  oled.println("    Arduino NEO-8M ");
-  oled.setCursor(0,5);
-  oled.println(" de F1TE mod F6BUA ");
+  oled.println("  Arduino NEO-8M   ");
+  oled.println("     par F1TE      ");
+  oled.setCursor(0,6);
+  oled.println(" modifie par F6BUA ");
    
   delay(4000);  						// délai maintien de l'écran de démarrage pendant 4s
 
