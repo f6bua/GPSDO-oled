@@ -88,59 +88,109 @@ int lock;
  char locator[10];
 
 
-
-// Calcul du locator
+// Calcul du QRA locator en mode complet
 void calcLocator(char *dst,float lat, float lng )     // Calcule le Locator ...
 {
   int lon1, lon2, lon3, lon4, lon5;
   int la1, la2, la3, la4, la5;
   float reste;
-  
-  // longitude  
-  reste = lng + (20*9);                     // On ajoute le décalage entre le 0 du locator et le 0 de Longitude
-   // Paquets de 20° 
-  lon1 = int(reste / 20);                 // Nbre de paquets de 20° dans le reste
-  reste = reste - float(lon1) * 20;       // 
-  // Paquets de 20/10 = 2°
-  lon2 = int(reste / 2);                  //  Nbre de paquets de 2° dans le reste
-  reste = reste - float(lon2) * 2;          //
-  // Paquets de 2°/24 = 5'
-  lon3 = int(reste * 60 / 5);             // nombre de paquets de 5' dans le reste
-  reste = reste - float(lon3)*(5/60);       //
-  // Paquets de 5'/10 = 30"
-  lon4 = int(reste * 3600/30);             //
-  reste = reste - float(lon4)*(30/3600);    //
-  // Paquets de 30"/24 = 1,25"
-  lon5 = int(reste * 3600/1.25);               //
+
+  //Les 2 lignes suivantes peuvent être remplacées par des boucles for pour initialiser le tableau
+  char alphabet_maj[26]={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+  char alphabet_min[26]={'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
   
 
-  // latitude
-  reste = lat + 90.0;                       // On ajoute 90° car le locator commence au pole Sud
-  // Paquets de 10°
-  la1 = int(reste / 10);                  // 
-  reste = reste - float(la1) * 10;        // 
-  // Paquets de 10/10 = 1°
-  la2 = int(reste / 1);                     // 
-  reste = reste - float(la2) * 1;           //
-  // Paquets de 1°/24 = 2,5'
-  la3 = int(reste * 60 / 2.5);              // 
-  reste = reste - float(la3) * (2.5/60);      // 
-  // Paquets de 2,5'/10 = 15"
-  la4 = int(reste * 3600/ 15);             //
-  reste = reste - float(la4)*(15/3600);     // 
-    // Paquets de 15"/24 = 0,625"
-  la5 = int(reste * 3600/0.625);            //
+ //==============================CALCUL LONGITUDE==================================
+
+  //Un carré en longitude = 20° (20*18 => 360°)
+  //La longitude 0 GPS est décalé de 180° (20°*9) de la longitude "0" du MLS
+  //Le premier caractère du MLS sera donc A si long est dans l'intervale [-180;-160[
+  //Il est nécessaire de rajouter 180° à la valeur de lng pour être bien aligné
   
-  dst[0] = (char)lon1 + 65;     //  9 + 65 = 74 --> J
-  dst[1] = (char)la1 + 65;      // 14 + 65 = 79 --> O
-  dst[2] = (char)lon2 + 48;     //    1 + 48 = 49 --> 1
-  dst[3] = (char)la2 + 48;      //    0 + 48 = 48 --> 0
-  dst[4] = (char)lon3 + 65;     // 18 + 65 = 83 --> S
-  dst[5] = (char)la3 + 65;      //  8 + 65 = 74 --> I
-  dst[6] = (char)lon4 + 48;     //    0 + 48 = 48 --> 0
-  dst[7] = (char)la4 + 48;      //    6 + 48 = 54 --> 6
-  dst[8] = (char)lon5 + 65;     // 23 + 65 = 88 --> X
-  dst[9] = (char)la5 + 65;      // 17 + 65 = 82 --> R     Si Long = 3,508333° et Lat = 50,3613°
+  lng+=180;
+
+  //Calcul lon1
+  lon1=trunc(lng/20);
+  reste = fmod(lng,20);
+
+  //Une fois le "Field" calculé, il faut maintenant calculer la position du square dans ce field
+  //Dans un field il y a 100 squares (une "matrice" de 10X10)
+  //Un field en longitude représentant 20°, un square en longitude représente 2° (20/10)
+  //Un field en latitude représentant 10°, un square en latitude représente 1° (10/10)
+
+  lon2 = trunc(reste/2);
+  reste = fmod(reste,2);
+
+  //Une fois le "square" calculé, il faut maintenant calculer la position du subsquare dans ce square
+  //Dans un square il y a 576 subsquare (une "matrice" de 24*24)
+  //Un square en longitude représentant 2°, un subsquare en longitude représente 2/24 ° , afin de garder des calculs simple on va convertir les degrés restant en minute
+  //Un degrés = 60 minutes => un square en longitude représente 2° => un square en longitude représente 120minutes => un subsquare en longitude représent 5minutes (120/24)
+
+  //Un square en latitude représentant 1°, un subsquare en latitude représente 1/24 ° , afin de garder des calculs simple on va convertir les degrés restant en minute
+  //Un degrés = 60 minutes => un square en latitude représente 1° => un square en latitude représente 60 minutes => un subsquare en latitude représent 2.5 minutes (60/24)
+
+  lon3 = trunc(reste*60/5);
+  reste = fmod(reste*60,5);
+
+  //Une fois le "subsquare" calculé, il faut maintenant calculer la position de l'extended square dans ce subsquare
+  //Dans un subsquare il y a 100 extend squares (une "matrice" de 10)
+
+  //Un subsquare en longitude représentant 5 minutes, un extended square en longitude représente 5/10 minute , afin de garder des calculs simple on va convertir les minutes restante en secondes
+  //Une minutes = 60 secondes => un subsquare en longitude représente 5 minutes => un subsquare en longitude représente 300 secondes => un extended square en longitude représent 30s (300/10)
+
+  //Un subsquare en latitude représentant 1°, un extended quare en latitude représente 1/10 minute , afin de garder des calculs simple on va convertir les minutes restantes en secondes
+  //Une minute = 60 secondes => un square en latitude représente 2.5 minutes => un square en latitude représente 150 minutes => un extended square en latitude représent 15 minutes (150/10)
+
+  lon4 = trunc(reste*60/30);
+  reste = fmod(reste*60,30);
+
+  //Une fois l extended square calculé, on peut calculer un subsquare dans cet extended subsquare
+  //Dans un extended square il y a 576 subsquares (une "matrice" de 24X24)
+
+  //Un extended square en longitude représentant 30s, un subsquare dans cet extended square en longitude représente 30/24 secondes , afin de garder des calculs simple on va convertir les secondes restante en milli secondes
+  //Une seconde = 1000 mili secondes => Un extended square en longitude représentant 30s => un extended square en longitude représente 30000 millis secondes => un subsquare dans cet extended square en longitude représent 1250 milli secondes (30000/24)
+
+  //Un extended square en latitude représentant 15s, un subsquare dans cet extended square en latitude représente 15/24 secondes , afin de garder des calculs simple on va convertir les secondes restante en milli secondes
+  //Une seconde = 1000 mili secondes => Un extended square en latitude représentant 15s => un extended square en latitude représente 15000 millis secondes => un subsquare dans cet extended square en latitude représent 625 milli secondes (15000/24)
+
+  lon5 = trunc(reste*1000/1250);
+  reste = fmod(reste*1000,1250);
+
+
+  //==============================CALCUL LATITUDE==================================
+
+  //un carré en latitude = 10° (10*18 => 180°)
+  //La latitude 0 GPS est décalé de 90° (20°*4.5) de la latitude "0" du MLS
+  //Le premier caractère du MLS sera donc A si lat est dans l'intervale [-90;-80[
+  //Il est necessaire de rajouter 90° = la valeur de lat pour être bien aligné
+
+  lat+=90;
+
+  la1=trunc(lat/10);
+  reste = fmod(lat,10);
+
+  la2=trunc(reste/1);
+  reste = fmod(reste,1);
+
+  la3 = trunc(reste*60/2.5);
+  reste = fmod(reste*60,2.5);
+
+  la4 = trunc(reste*60/15);
+  reste = fmod(reste*60,15);
+
+  la5 = trunc(reste*1000/625);
+  reste = fmod(reste*1000,625);
+
+  locator[0] = alphabet_maj[lon1];
+  locator[1] = alphabet_maj[la1];
+  locator[2] = (char) lon2 + 0x30;
+  locator[3] = (char) la2 + 0x30;
+  locator[4] = alphabet_maj[lon3];
+  locator[5] = alphabet_maj[la3];
+  locator[6] = (char) lon4 + 0x30;
+  locator[7] = (char) la4 + 0x30;
+  locator[8] = alphabet_min[lon5];
+  locator[9] = alphabet_min[la5];
 }
 
 void getgps(TinyGPSPlus &gps)
@@ -159,7 +209,7 @@ void getgps(TinyGPSPlus &gps)
   // -------------------
 
   oled.setCursor(0,3);
-  oled.print(" Heure ");
+  oled.print(" Heure: ");
       if (gps.time.hour() < 10)     // Add a leading zero
         oled.print("0");
       oled.print(gps.time.hour());  
@@ -177,18 +227,18 @@ void getgps(TinyGPSPlus &gps)
   // Affichage --- Sat + Locator
   // ---------------------------
   calcLocator(locator,gps.location.lat(),gps.location.lng());
-  oled.setCursor(0,4); oled.print(" Sat   "); 
+  oled.setCursor(0,4); oled.print(" Sat:"); 
   if (gps.satellites.value() < 10)     // Add a leading zero
     oled.print("0");
   oled.print(gps.satellites.value());
 
   if (lock == 1)
     {
-    oled.print("  Lock   ");
+    oled.print("          Lock");
     }
   else
   {
-   oled.print("  Unlock");
+    oled.print("        Unlock");
   }
   oled.setCursor(0,6);
   oled.print("  ");
