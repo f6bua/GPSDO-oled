@@ -430,10 +430,11 @@ void setup()
   oled.println();
   oled.println("   40-25-10 MHz    ");
   oled.setCursor(0,3);
-  oled.println("  Arduino NEO-8M   ");
-  oled.println("     par F1TE      ");
+  oled.println("  Arduino Nano     ");
+//  oled.println("     par F1TE      ");
+  oled.set2X();
   oled.setCursor(0,6);
-  oled.println(" modifie par F6BUA ");
+  oled.println(" par F6BUA ");
    
   delay(4000);  						// délai maintien de l'écran de démarrage pendant 4s
 
